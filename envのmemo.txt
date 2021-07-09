@@ -1,0 +1,4 @@
+# 設定したAPI_KEYをコード上で利用する際は、process.env.API_KEYと記述します。
+API_KEY=発行したAPIKEY
+下記は例
+API_KEY=9osf03fi539c43fw
