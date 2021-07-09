@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css';
 const defaultEndpoint = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${process.env.API_KEY}&format=json&large_area=Z011`;
 // 下記は(https://nextjs.org/docs/basic-features/data-fetching#getserversideprops-server-side-rendering)の構文
 export async function getServerSideProps() {
-  const res = await fetch(`https://...`);
+  const res = await fetch(defaultEndpoint);
   const data = await res.json();
 
   if (!data) {
@@ -15,11 +15,13 @@ export async function getServerSideProps() {
     };
   }
   return {
-    props: {}, // will be passed to the page component as props
+    props: { data }, // はプロップスとしてページコンポーネントに渡されます。
   };
 }
 
-export default function Home() {
+export default function Home({ data }) {
+  // コンソール画面に表示
+  console.log(data.results);
   return (
     <div className={styles.container}>
       <Head>
