@@ -3,6 +3,9 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
+  // ?format=jsonでjson形式に変更
+  const defaultEndpoint =
+    'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?format=json';
   return (
     <div className={styles.container}>
       <Head>
