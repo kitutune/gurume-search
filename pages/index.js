@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
+import { useEffect, useState } from 'react';
 
 // ?format=jsonでjson形式に変更
 const defaultEndpoint = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${process.env.API_KEY}&format=json&large_area=Z011`;
@@ -23,6 +24,62 @@ export async function getServerSideProps() {
 export default function Home({ data }) {
   // コンソール画面に表示
   console.log(data.results.shop);
+
+  const {
+    results_available = 0, //クエリー条件にマッチする、検索結果の全件数
+    results_start = 1, //検索結果の開始位置
+    shop: defaultShops = [], //[複数要素]を現すshopは空配列のdefaultShopsとする
+  } = data.results;
+
+  //取得した店舗データを格納
+  const [shop, updateShops] = useState(defaultShops);
+
+  //取得したページデータを格納
+  const [page, updatePage] = useState({
+    results_available: results_available,
+    results_start: results_start,
+  });
+
+  // 開始位置の変更を監視
+  useEffect(() => {
+    if (page.results_start === 1) return;
+
+    const params = { start: page.results_start, keyword: keyword }; //検索結果の開始位置
+    const query = new URLSearchParams(params);
+
+    const request = async () => {
+      const res = await fetch(`/api/search?${query}`); //APIのURLと検索ワードのkeywordは(quary)に含まれている
+      const data = await res.json();
+      const nextData = data.results;
+
+      updatePage({
+        results_available: nextData.results_available, //新しいクエリー条件にマッチする、検索結果の全件数
+        results_start: nextData.results_start, //新しい検索結果の開始位置
+      });
+
+      if (nextData.results_start === 1) {
+        updateShops(nextData.shop); //新しい検索結果の[複数要素]
+        return;
+      }
+      updateShops((prev) => {
+        return [...prev, ...nextData.shop]; //既存の配列に新しい検索結果の[複数要素]を足す
+      });
+    };
+    request();
+  }, [page.results_start]); //開始位置の変更が確認されるたびに
+
+  // もっと読むボタンを押したときの処理
+  const handlerOnClickReadMore = () => {
+    if (page.results_returned <= page.results_start) return; //このＸＭＬに含まれる検索結果の件数<=検索結果の開始位置
+
+    updatePage((prev) => {
+      return {
+        ...prev,
+        results_start: prev.results_start + 1,
+      };
+    });
+  };
+
   return (
     <>
       <Head>
@@ -71,7 +128,20 @@ export default function Home({ data }) {
               </li>
             );
           })}
+          {/* もっと読むボタンを画面下部に追加 */}
         </ul>
+        {page.results_returned <= page.results_start ? (
+          <div></div>
+        ) : (
+          <div className="text-center pt-4 pb-8">
+            <button
+              className="bg-red-500 rounded text-white tracking-wider font-medium hover:opacity-75 py-2 px-6 "
+              onClick={handlerOnClickReadMore}
+            >
+              もっと読む
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
