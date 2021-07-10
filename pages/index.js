@@ -23,7 +23,10 @@ export async function getServerSideProps() {
 
 export default function Home({ data }) {
   // コンソール画面に表示
-  console.log(data.results.shop);
+  // console.log(data.results.shop);
+  useEffect(() => {
+    console.log(data.results.shop);
+  }, [data]);
 
   const {
     results_available = 0, //クエリー条件にマッチする、検索結果の全件数
@@ -33,6 +36,10 @@ export default function Home({ data }) {
 
   //取得した店舗データを格納
   const [shop, updateShops] = useState(defaultShops);
+
+  useEffect(() => {
+    console.log(shop);
+  }, [shop]);
 
   //取得したページデータを格納
   const [page, updatePage] = useState({
@@ -59,6 +66,7 @@ export default function Home({ data }) {
 
       if (nextData.results_start === 1) {
         updateShops(nextData.shop); //新しい検索結果の[複数要素]
+
         return;
       }
       updateShops((prev) => {
@@ -69,7 +77,9 @@ export default function Home({ data }) {
   }, [page.results_start]); //開始位置の変更が確認されるたびに
 
   // もっと読むボタンを押したときの処理
-  const handlerOnClickReadMore = () => {
+  const handlerOnClickReadMore = (e) => {
+    // e.preventDefault();
+
     if (page.results_returned <= page.results_start) return; //このＸＭＬに含まれる検索結果の件数<=検索結果の開始位置
 
     updatePage((prev) => {
@@ -85,7 +95,7 @@ export default function Home({ data }) {
   // キーワードの変更を監視
   useEffect(() => {
     if (keyword === '') return;
-
+    console.log('updatePage');
     const params = { keyword: keyword };
     const query = new URLSearchParams(params);
 
@@ -146,7 +156,7 @@ export default function Home({ data }) {
           </div>
         </div>
         <ul className="mx-4">
-          {data.results.shop.map((item, index) => {
+          {shop.map((item, index) => {
             return (
               <li
                 key={index}
