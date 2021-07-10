@@ -8,7 +8,9 @@ export default async (req, res) => {
   if (typeof req.query.keyword !== undefined) {
     url = `${url}&keyword=${req.query.keyword}`;
   }
-
+  if (typeof req.query.start !== undefined) {
+    url = `${url}&start=${req.query.start}`;
+  }
   url = encodeURI(url);
 
   const result = await fetch(url);

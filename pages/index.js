@@ -53,17 +53,18 @@ export default function Home({ data }) {
 
     const params = { start: page.results_start, keyword: keyword }; //検索結果の開始位置
     const query = new URLSearchParams(params);
-
+    // console.log(params.start);
+    // console.log(page.results_start);
     const request = async () => {
       const res = await fetch(`/api/search?${query}`); //APIのURLと検索ワードのkeywordは(quary)に含まれている
       const data = await res.json();
       const nextData = data.results;
-
+      console.log(nextData.shop);
       updatePage({
         results_available: nextData.results_available, //新しいクエリー条件にマッチする、検索結果の全件数
         results_start: nextData.results_start, //新しい検索結果の開始位置
       });
-
+      // console.log(nextData.results_start);
       if (nextData.results_start === 1) {
         updateShops(nextData.shop); //新しい検索結果の[複数要素]
 
@@ -79,13 +80,13 @@ export default function Home({ data }) {
   // もっと読むボタンを押したときの処理
   const handlerOnClickReadMore = (e) => {
     // e.preventDefault();
-
+    // console.log('click');
     if (page.results_returned <= page.results_start) return; //このＸＭＬに含まれる検索結果の件数<=検索結果の開始位置
 
     updatePage((prev) => {
       return {
         ...prev,
-        results_start: prev.results_start + 1,
+        results_start: shop.length + 1,
       };
     });
   };
