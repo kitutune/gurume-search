@@ -79,13 +79,72 @@ export default function Home({ data }) {
       };
     });
   };
+  // キーワードを格納
+  const [keyword, setKeyword] = useState('');
 
+  // キーワードの変更を監視
+  useEffect(() => {
+    if (keyword === '') return;
+
+    const params = { keyword: keyword };
+    const query = new URLSearchParams(params);
+
+    // リクエスト、レスポンスの取得
+    const request = async () => {
+      const res = await fetch(`/api/search?${query}`);
+      const data = await res.json();
+      const nextData = data.results;
+
+      updatePage({
+        results_available: nextData.results_available,
+        results_start: nextData.results_start,
+      });
+
+      updateShops(nextData.shop);
+    };
+
+    request();
+  }, [keyword]);
+
+  // 検索ボタン押下時の処理
+  const handlerOnSubmitSearch = (e) => {
+    e.preventDefault();
+
+    const { currentTarget = {} } = e;
+    const fields = Array.from(currentTarget?.elements);
+    const fieldQuery = fields.find((field) => field.name === 'query');
+
+    // keywordをセット
+    const value = fieldQuery.value || '';
+    setKeyword(value);
+  };
   return (
     <>
       <Head>
         <title>東京グルメ店検索</title>
       </Head>
       <div className="max-w-3xl font-mono bg-gray-100 mx-auto">
+        <div>
+          <div className="text-2xl py-6 text-center">
+            <h2 className="font-medium tracking-wider ">東京グルメ店検索</h2>
+          </div>
+          <div className="">
+            <form onSubmit={handlerOnSubmitSearch} className="text-center">
+              <input
+                type="search"
+                name="query"
+                className="rounded py-2 px-4 text-left border-red-500"
+                placeholder="キーワードを入力して下さい"
+              />
+              <button className="ml-2 text-white bg-red-500 rounded py-2 px-6 hover:opacity-75">
+                Search
+              </button>
+            </form>
+            <div className="text-sm pt-2 text-gray-600 text-center">
+              <span>{page.results_available}</span> <span>件</span>
+            </div>
+          </div>
+        </div>
         <ul className="mx-4">
           {data.results.shop.map((item, index) => {
             return (

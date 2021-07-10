@@ -5,8 +5,8 @@ const defaultEndpoint = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?
 export default async (req, res) => {
   let url = defaultEndpoint;
 
-  if (typeof req.query.start !== undefined) {
-    url = `${url}&start=${req.query.start}`;
+  if (typeof req.query.keyword !== undefined) {
+    url = `${url}&keyword=${req.query.keyword}`;
   }
 
   url = encodeURI(url);
