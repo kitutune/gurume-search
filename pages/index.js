@@ -28,43 +28,51 @@ export default function Home({ data }) {
       <Head>
         <title>東京グルメ店検索</title>
       </Head>
-
-      <ul>
-        {data.results.shop.map((item, index) => {
-          return (
-            <li key={index}>
-              <Link href={item.urls.pc}>
-                {/* data.result.shop.item.urls.pc */}
-                {/* [複数要素].店舗URL.PC向けURL */}
-                <a>
-                  <div>
-                    <div>
-                      <div>
-                        <img src={item.photo.mobile.s} alt={item.name} />
-                        {/* [複数要素].写真.携帯向け//[複数要素].掲載店名 */}
-                      </div>
-                    </div>
-                    <div>
-                      <div>{item.name}</div>
-                      {/* [複数要素].掲載店名 */}
-                      <div>
+      <div className="max-w-3xl font-mono bg-gray-100 mx-auto">
+        <ul className="mx-4">
+          {data.results.shop.map((item, index) => {
+            return (
+              <li
+                key={index}
+                className="my-4 bg-white rounded border-red-500 border-2"
+              >
+                <Link href={item.urls.pc}>
+                  {/* data.result.shop.item.urls.pc */}
+                  {/* [複数要素].店舗URL.PC向けURL */}
+                  <a>
+                    <div className="grid grid-cols-10">
+                      <div className="col-span-2 self-center">
                         <div>
-                          <span>{item.genre.name}</span>
-                          {/* [複数要素].お店ジャンル.お店ジャンル名 */}
-                          <span>{item.catch}</span>
-                          {/* [複数要素].お店キャッチ */}
+                          <img src={item.photo.mobile.s} alt={item.name} />
+                          {/* [複数要素].写真.携帯向け//[複数要素].掲載店名 */}
                         </div>
-                        <p>{item.access}</p>
-                        {/* [複数要素].交通アクセス */}
+                      </div>
+                      <div className="ml-3 col-span-8">
+                        <div className="text-lg mt-2 mr-2">
+                          {item.name}
+                          {/* [複数要素].掲載店名 */}
+                        </div>
+                        <div className="text-xs mt-2 mr-2 pb-2">
+                          <div className="text-xs">
+                            <span className="font-medium">
+                              {item.genre.name}
+                            </span>
+                            {/* [複数要素].お店ジャンル.お店ジャンル名 */}
+                            <span className="ml-4">{item.catch}</span>
+                            {/* [複数要素].お店キャッチ */}
+                          </div>
+                          <p className="mt-1"> {item.access}</p>
+                          {/* [複数要素].交通アクセス */}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </a>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                  </a>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </>
   );
 }
